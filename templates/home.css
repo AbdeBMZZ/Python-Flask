@@ -1,0 +1,11 @@
+* {
+  font-size: 40px;
+  display: none;
+}
+body {
+  height: 100vh;
+}
+form {
+  display: flex;
+  flex-direction: column;
+}
