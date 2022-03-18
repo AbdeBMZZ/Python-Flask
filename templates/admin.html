@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>ADMIN</title>
+
+    <style>
+        body{
+            height: 100vh;
+        }
+        ul{
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            width: 100%;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+        }
+        .title_add{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px;
+        }
+        .title_add i{
+            font-size: 34px;
+            color: #055160;
+            cursor: pointer;
+        }
+        .title_add i:hover{
+            opacity: 85%;
+            transition: 0.2s;
+        }
+
+        .etudiants{
+            padding: 20px;
+        }
+        .etudiant{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px auto;
+        }
+        #infos_btn{
+            border: #055160 1px solid;
+            border-radius: 10px;
+            width: 100px;
+            color: white;
+            background-color: #055160;
+            font-weight: 500;
+
+        }
+        #infos_btn:hover{
+            background-color: white;
+            color: #055160;
+            transition: 0.3s;
+        }
+        #dlt_btn{
+            color: white;
+            background-color: #e53333;
+            border: #e53333 1px solid;
+            border-radius: 10px;
+            width: 100px;
+            font-weight: 500;
+        }
+        #dlt_btn:hover{
+            background-color: white;
+            color: #e53333;
+            transition: 0.3s;
+        }
+        .input_td{
+            border: none;
+        }
+        #btn_update{
+            border: 1px solid #12d0d9;
+            background: #12d0d9;
+            border-radius: 10px;
+            width: 90px;
+            
+        }
+
+        #btn_update:hover{
+            transition: 0.3s;
+            background-color: white;
+            color: #12d0d9;
+        }
+        #modal_btnClose{
+            border: none !important;
+            border-radius: 10px !important;
+            padding: 7px !important;
+        }
+
+        #form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #form input{
+            margin: 10px auto;
+            width: 27rem;
+            border-radius: 10px;
+            padding: 8px;
+        }
+        #close_modal{
+            font-size: 25px;
+            color: #e53333;
+        }
+        #btn_closeModal{
+            border: none;
+            background: none;
+        }
+        .error {
+            color: #e53333;
+            font-size: 15px;
+        }
+        #msg {
+            color: #055160;
+            padding: 10px;
+            margin: 9px;
+            border-radius: 7px;
+            -moz-animation: cssAnimation 0s ease-in 5s forwards;
+            /* Firefox */
+            -webkit-animation: cssAnimation 0s ease-in 5s forwards;
+            /* Safari and Chrome */
+            -o-animation: cssAnimation 0s ease-in 5s forwards;
+            /* Opera */
+            animation: cssAnimation 0s ease-in 5s forwards;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+        }
+        @keyframes cssAnimation {
+            to {
+                width:0;
+                height:0;
+                overflow:hidden;
+                padding: 0;
+            }
+        }
+        @-webkit-keyframes cssAnimation {
+            to {
+                width:0;
+                height:0;
+                visibility:hidden;
+                padding: 0;
+            }
+        }
+        #spinner{
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            z-index: 9999;
+        }
+        #btn_add, #btn_cancel{
+            width: 27rem;
+            border-radius: 10px;
+            padding: 8px;
+            font-weight: 500;
+        }
+        #btn_add{
+            background-color: #055160;
+            color: white;
+            border: 1px solid #055160;
+            font-weight: 500;
+            margin: auto;
+            margin-top: 5px;
+        }
+        #btn_cancel{
+            margin: auto;
+            background-color: #e53333;
+            color: white;
+            border: 1px solid #e53333;
+        }
+        #btn_cancel:hover{
+            background-color: white;
+            color: #e53333;
+            transition: 0.3s;
+            text-decoration: underline #e53333;
+        }
+        #btn_add:hover{
+            background-color: white;
+            color: #055160;
+            transition: 0.3s;
+            text-decoration: underline #055160;
+        }
+        
+        @media screen and (max-width: 450px) {
+            .etudiant{
+                display: flex;
+                flex-direction: column;
+                align-items: baseline;
+            }
+        }
+        @media screen and (max-width: 580px){
+            #btn_add, #btn_cancel,#form input{
+                width: 21rem;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="spinner-border" id="spinner" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <nav id="navB" class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+                <a class="navbar-brand" href="/admin"><i class="fa-solid fa-building-user"></i> Admin</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/"><i class="fa-solid fa-house"></i> Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Se déconnecter</a>
+              </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages()%}
+            {% if messages%}
+                {% for msg in messages%}
+                    <p id="msg">{{msg}} <i class="fa-solid fa-square-check"></i></p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="title_add">
+            <h4>Etudiants : </h4>
+            <i class="fa-solid fa-circle-plus" data-toggle="modal" data-target="#exampleModal"></i>            
+        </div>
+        <div class="etudiants">
+            {% for etudiant in etudiants%}
+            <div class="etudiant">
+                <div class="etudiant_infos">
+                    <h6>{{etudiant.nom}} {{etudiant.prenom}}</h6>
+                </div>
+                <div class="actions">
+                    <button id="infos_btn" type="button"  aria-expanded="false" aria-controls="collapseExample" data-toggle="collapse" data-target="#{{etudiant.cin}}">details</button>
+                    <button id="dlt_btn" name={{etudiant.cin}} class="delete_btn" data-toggle="modal" data-target="#deleteModal" onclick="mayble_delete(this.name)" type="submit">Supprimer</button>
+                </div>
+            </div>
+            <div class="collapse" id={{etudiant.cin}}>
+                <div class="card card-body">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">CIN</th>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Prenom</th>
+                            <th scope="col">Password</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{etudiant.cin}}</td>
+                            <td>{{etudiant.nom}}</td>
+                            <td>{{etudiant.prenom}}</td>
+                            <td>{{etudiant.password}}</td>
+                        
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+              </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Ajouter un etudiant</h5>
+              <button type="button" id="btn_closeModal" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true"><i id="close_modal" class="fa-solid fa-circle-xmark"></i></span>
+              </button>
+            </div>
+            <form class="modal-body" id="form" action="#" method="post">
+                <div class="cin_container">
+                    <input class="inp_txt" id="cin" type="text" name="cin" placeholder="Entrer le CIN">
+                    <div class="error" id="cin_error"></div>
+                </div>
+                <div class="nom_container">
+                    <input class="inp_txt" id="nom" type="text" name="nom" placeholder="Entrer le NOM">
+                    <div class="error" id="nom_error"></div>
+                </div>
+                <div class="prenom_container">
+                    <input class="inp_txt" id="prenom" type="text" name="prenom" placeholder="Entrer le PRENOM">
+                    <div class="error" id="prenom_error"></div>
+                </div>
+                <div class="pass_container">
+                    <input class="inp_txt" id="pass" type="password" name="password" placeholder="Entrer un mot de pass">
+                    <div class="error" id="pass_error"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btn_cancel" data-dismiss="modal">Annuler</button>
+                    <button type="submit" id="btn_add" >Ajouter</button>
+
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+
+      <!-- delete modal -->
+      <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Confirmer</h5>
+            </div>
+            <div class="modal-body">
+              Vous voulez vraiment supprimer cet etudiant ?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+              <button type="button" class="btn btn-danger" onclick="Delete()">Supprimer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/139491f05d.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>    
+
+    <script>
+
+        $(window).load(function() {
+            // Animate loader off screen
+            $("#spinner").fadeOut("slow");;
+        });
+        function mayble_delete(id){
+            localStorage.setItem("id_to_delete", id)
+
+        }
+        function Delete(){
+            $.ajax({
+            url : '/deleteEtudiant',
+            data : {id:localStorage.getItem('id_to_delete')},
+            type : 'POST',
+            success: ()=> {location.reload()},
+            error: ()=> alert("ERROR")
+            });
+      }
+
+
+    </script>
+    <script>
+        let cin= document.getElementById("cin");
+        let nom = document.getElementById("nom");
+        let prenom = document.getElementById("prenom");
+        let pass = document.getElementById("pass");
+
+        // Error messages
+        let errorCin = document.getElementById("cin_error");
+        let errorPass = document.getElementById("pass_error");
+        let errorNom = document.getElementById("nom_error");
+        let errorPrenom = document.getElementById("prenom_error");
+
+        // Form
+        let form = document.getElementById("form");
+
+        // Event listener
+        form.addEventListener("submit", function (e) {
+            let messageCin = [];
+            let messagePass = [];
+            let messageNom = [];
+            let messagePrenom = [];
+            
+            if (cin.value === "" || cin.value === null) {
+                messageCin.push("* This field is required");
+            }
+
+            if (pass.value === "" || pass.value === null) {
+                messagePass.push("* This field is required");
+            }
+
+            if (nom.value === "" || nom.value === null) {
+                messageNom.push("* This field is required");
+            }
+            if (prenom.value === "" || prenom.value === null) {
+                messagePrenom.push("* This field is required");
+            }
+            
+            // Statement to shows the errors
+            if (messageCin.length || messagePass.length || messageNom.length || messagePrenom.length > 0) {
+                e.preventDefault();
+                errorCin.innerText = messageCin;
+                errorPass.innerText = messagePass;
+                errorNom.innerText = messageNom;
+                errorPrenom.innerText = messagePrenom;
+            }
+            
+            // if the values length is filled and it's greater than 2 then redirect to this page
+            if ((cin.value.length > 2 && pass.value.length > 2 && nom.value.length > 2 && prenom.value.length > 2)){
+                window.location = "/admin";
+            }
+        });
+    </script>
+</body>
+</html>

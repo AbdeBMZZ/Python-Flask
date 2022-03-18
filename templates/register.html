@@ -12,9 +12,7 @@
             body {
             height: 100vh;
             }
-            #navB{
-                background-color: rgb(172 213 200) !important
-            }
+
             form {
             display: flex;
             flex-direction: column;
@@ -24,21 +22,21 @@
             }
             form input, #btn_log{
                 margin: 10px auto;
-                width: 420px;
+                width: 27rem;
                 border-radius: 10px;
                 padding: 8px;
             }
             #btn_log{
-                background-color: darkviolet;
+                background-color: #055160;
                 color: white;
-                border: 1px solid darkviolet;
+                border: 1px solid #055160;
                 font-weight: 500;
             }
             #btn_log:hover{
                 background-color: white;
-                color: darkviolet;
+                color: #055160;
                 transition: 0.3s;
-                text-decoration: underline darkviolet;
+                text-decoration: underline #055160;
             }
             .error {
               color: red;
@@ -48,8 +46,31 @@
                 display: flex;
                 align-items: center;
                 width: 600px;
+                flex-direction: column;
             }
-
+            ul{
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-end;
+                width: 100%;
+            }
+            #msg{
+                color: #055160;
+                border-radius: 2px;
+                transition: 0.5s;
+                width: 420px;
+                border-radius: 10px;
+                padding: 8px;
+            }
+            #user_add{
+                font-size: 45px;
+                margin: 20px auto;
+            }
+            @media screen and (max-width: 530px) {
+                form input, #btn_log{
+                    width: 21rem;
+                }
+            }
     </style>
 </head>
 <body>
@@ -57,16 +78,16 @@
         <div class="container-fluid">
                 <a class="navbar-brand" href="#">Abdellah Boumaiza</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="/login">Login</a>
+                <a class="nav-link" aria-current="page" href="/login">Connexion</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="/register">Register</a>
+                <a class="nav-link active" href="/register">S'inscrire</a>
               </li>
             </ul>
 
@@ -74,6 +95,14 @@
         </div>
     </nav>
     <form id="form" action="#" method="post">
+        {% with messages = get_flashed_messages()%}
+            {% if messages%}
+                {% for msg in messages%}
+                    <p id="msg">{{msg}}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <i id="user_add" class="fa-solid fa-address-card"></i>
         <h4>Register</h4>
         <div class="cin_container">
             <input class="inp_txt" id="cin" type="text" name="cin" placeholder="Entrer votre CIN">
@@ -88,12 +117,13 @@
             <div class="error" id="prenom_error"></div>
         </div>
         <div class="pass_container">
-            <input class="inp_txt" id="pass" type="password" name="password" placeholder="Entrer votre mot de pass">
+            <input class="inp_txt" id="pass" type="password" name="password" placeholder="Entrer votre Mot de passe">
             <div class="error" id="pass_error"></div>
         </div>
-        <button type="submit" id="btn_log" value="Login" >Register</button>
+        <button type="submit" id="btn_log" value="Login" >S'inscrire</button>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/139491f05d.js" crossorigin="anonymous"></script>
     <script>
 
         let cin= document.getElementById("cin");
@@ -118,18 +148,18 @@
             let messagePrenom = [];
             
             if (cin.value === "" || cin.value === null) {
-                messageCin.push("* This field is required");
+                messageCin.push("* veuillez entrer un cin valide");
             }
 
             if (pass.value === "" || pass.value === null) {
-                messagePass.push("* This field is required");
+                messagePass.push("* veuillez entrer un mot de passe valide");
             }
 
             if (nom.value === "" || nom.value === null) {
-                messageNom.push("* This field is required");
+                messageNom.push("* veuillez entrer un nom valide");
             }
             if (prenom.value === "" || prenom.value === null) {
-                messagePrenom.push("* This field is required");
+                messagePrenom.push("* veuillez entrer un prenom valide");
             }
             
             // Statement to shows the errors
@@ -142,7 +172,7 @@
             }
             
             // if the values length is filled and it's greater than 2 then redirect to this page
-            if ((cin.value.length > 2,pass.value.length > 2, nom.value.length > 2, prenom.value.length > 2)){
+            if ((cin.value.length > 2 && pass.value.length > 2 && nom.value.length > 2 && prenom.value.length > 2)){
                 window.location = "/register";
             }
         });
