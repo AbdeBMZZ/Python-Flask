@@ -94,6 +94,37 @@
                     width: 21rem;
                 }
             }
+            #msg {
+            color: #055160;
+            padding: 10px;
+            margin: 9px;
+            border-radius: 7px;
+            -moz-animation: cssAnimation 0s ease-in 5s forwards;
+            /* Firefox */
+            -webkit-animation: cssAnimation 0s ease-in 5s forwards;
+            /* Safari and Chrome */
+            -o-animation: cssAnimation 0s ease-in 5s forwards;
+            /* Opera */
+            animation: cssAnimation 0s ease-in 5s forwards;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+        }
+        @keyframes cssAnimation {
+            to {
+                width:0;
+                height:0;
+                overflow:hidden;
+                padding: 0;
+            }
+        }
+        @-webkit-keyframes cssAnimation {
+            to {
+                width:0;
+                height:0;
+                visibility:hidden;
+                padding: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -119,6 +150,15 @@
     </nav>
 
     <form id="form" action="#" method="post">
+        {% with messages = get_flashed_messages()%}
+            {% if messages%}
+                {% for msg in messages%}
+                    {% if msg == "Compte créé avec succès, vous pouvez maintenant vous connecter"%}
+                        <p id="msg">{{msg}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <i id="user_lock" class="fa-solid fa-user-lock"></i>
         <h4>Login</h4>
         <div class="cin_container">
@@ -129,12 +169,14 @@
             <input class="inp_txt" id="pass" type="password" name="password" placeholder="Mot de passe">
             <div class="error" id="pass_error">
                 {% with messages = get_flashed_messages()%}
-                {% if messages%}
-                    {% for msg in messages%}
-                        {{msg}}
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+                    {% if messages%}
+                        {% for msg in messages%}
+                            {% if msg != "Compte créé avec succès, vous pouvez maintenant vous connecter"%}
+                                {{msg}}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
         <button type="submit" id="btn_log" value="Login" >Connexion
