@@ -1,0 +1,82 @@
+body {
+  background-color: #f8f9fa;
+  height: 100vh;
+}
+.avatar {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+}
+.container {
+  background: #fff;
+  border-radius: 40px;
+  display: flex;
+  padding: 50px;
+  align-items: center;
+}
+.container img {
+  border-radius: 40px;
+}
+.container .fsdm_logo {
+  flex: 0.4;
+}
+.container .user_data {
+  width: 100%;
+  padding-top: 20px;
+  flex: 0.6;
+}
+.user_data {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#msg {
+  text-align: center;
+  margin: 50px;
+  font-size: 18px;
+  font-weight: 400;
+}
+.user_info {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.user_info h6 {
+  width: 150px;
+}
+.user_info span {
+  margin-left: 50px;
+}
+.user_data h5 {
+  margin-bottom: 20px;
+}
+
+@media screen and (max-width: 1000px) {
+  .user_data {
+    align-items: center;
+  }
+}
+@media screen and (max-width: 772px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+  }
+  .container .fsdm_logo img {
+    height: 150px;
+  }
+  .container .user_data {
+    padding: 0;
+  }
+  .user_data {
+    align-items: center;
+  }
+}

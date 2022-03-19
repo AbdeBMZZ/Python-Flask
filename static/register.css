@@ -1,0 +1,67 @@
+body {
+  height: 100vh;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+}
+form input,
+#btn_log {
+  margin: 10px auto;
+  width: 27rem;
+  border-radius: 10px;
+  padding: 8px;
+}
+#btn_log {
+  background-color: #055160;
+  color: white;
+  border: 1px solid #055160;
+  font-weight: 500;
+}
+#btn_log:hover {
+  background-color: white;
+  color: #055160;
+  transition: 0.3s;
+  text-decoration: underline #055160;
+}
+.error {
+  color: red;
+  font-size: 15px;
+}
+.cin_container,
+.pass_container,
+.prenom_container,
+.nom_container {
+  display: flex;
+  align-items: center;
+  width: 600px;
+  flex-direction: column;
+}
+ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+}
+#msg {
+  color: #055160;
+  border-radius: 2px;
+  transition: 0.5s;
+  width: 420px;
+  border-radius: 10px;
+  padding: 8px;
+}
+#user_add {
+  font-size: 45px;
+  margin: 20px auto;
+}
+@media screen and (max-width: 530px) {
+  form input,
+  #btn_log {
+    width: 21rem;
+  }
+}
