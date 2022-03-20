@@ -1,4 +1,5 @@
 from datetime import timedelta
+import sqlite3
 from flask import Flask, redirect, render_template, request, session, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import pickle
@@ -50,7 +51,7 @@ def register():
             cin=request.form["cin"]).first()
 
         if found_etudiant:
-            flash("il y a un compte avec ce CIN, pensez à vous connecter!")
+            flash("il y a un compte avec ce CIN, pensez à vous connecter!", "error")
             return redirect(url_for("register"))
         else:
             etudiant = etudiants(request.form["cin"], request.form["nom"],
@@ -84,10 +85,10 @@ def login():
                 session["etudiant"] = user
                 return redirect(url_for("index"))
             else:
-                flash("Mot de passe incorrect", "info")
+                flash("Mot de passe incorrect", "error")
                 return redirect(url_for("login"))
         else:
-            flash("Check your infos", "info")
+            flash("Check your infos", "error")
             return redirect(url_for("login"))
 
     else:
@@ -134,15 +135,46 @@ def profile():
         return redirect(url_for("login"))
 
 
-@app.route('/admin', methods=["POST", "GET"])
+@app.route('/getEtudiant', methods=["GET"])
+def getEtudiant():
+
+    id = request.args['id']
+
+    found_etd = db.session.query(etudiants).filter_by(cin=id).first()
+
+    etudiant = {
+        "cin": found_etd.cin,
+        "nom": found_etd.nom,
+        "prenom": found_etd.prenom,
+        "password": found_etd.password,
+        "is_admin": found_etd.is_admin
+    }
+    return etudiant
+
+
+@app.route('/admin', methods=["POST", "GET",  "PUT"])
 def admin():
     if "etudiant" in session:
         if request.method == "POST":
             etudiant = etudiants(
                 request.form["cin"], request.form["nom"], request.form["prenom"], request.form["password"], 0)
-            db.session.add(etudiant)
-            db.session.commit()
-            flash("Étudiant ajouté avec succès!", "info")
+            user = {'cin': etudiant.cin,
+                    'nom': etudiant.nom,
+                    'prenom': etudiant.prenom,
+                    'password': etudiant.password,
+                    'is_admin': etudiant.is_admin
+                    }
+            if etudiants.query.filter_by(cin=user["cin"]).first():
+
+                flash("Étudiant Existe veuillez entrer un nouveau etudiant!", "error")
+                return redirect(url_for("admin"))
+            else:
+                db.session.add(etudiant)
+                db.session.commit()
+                flash("Étudiant ajouté avec succès!", "info")
+                return redirect(url_for("admin"))
+        if request.method == "PUT":
+            flash("Étudiant modifie avec succès!", "info")
             return redirect(url_for("admin"))
         else:
             etd = session["etudiant"]
@@ -155,6 +187,16 @@ def admin():
         return redirect(url_for("login"))
 
 
+@app.route('/admin/update', methods=["POST"])
+def update_etd():
+    etd = db.session.query(etudiants).filter_by(
+        cin=request.form["password_confirm"]).update({"cin": request.form["cin"], "nom": request.form["nom"], "prenom": request.form["prenom"], "password": request.form["password"]})
+
+    db.session.commit()
+    flash("Mis à jour avec succés!", "info")
+    return redirect(url_for("admin"))
+
+
 @app.route("/deleteEtudiant", methods=["POST"])
 def etudiant_delete():
     id = request.form['id']
@@ -164,5 +206,30 @@ def etudiant_delete():
     return json.dumps({'status': 'OK'})
 
 
+@app.route("/export")
+def export():
+    etd = session["etudiant"]
+    if etd['is_admin'] == 1:
+        conn = sqlite3.connect('etudiants.sqlite3')
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM etudiants")
+        rows = cursor.fetchall()
+
+        students = []
+        content = {}
+
+        for row in rows:
+            content = {'cin': row[0], 'nom': row[1], 'prenom': row[2],
+                       'password': row[3], 'is_admin': row[4]}
+            students.append(content)
+            content = {}
+
+        return jsonify(students)
+    else:
+        return redirect(url_for("index"))
+
+
 if __name__ == "__main__":
+    db.create_all()
     app.run(host='127.0.0.1', debug=True)
